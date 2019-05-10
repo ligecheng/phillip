@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapperFaces.UserMapper">
+  <resultMap id="BaseResultMap" type="com.entity.User">
+    <constructor>
+      <idArg column="en_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="en_username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="en_reallyname" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="en_password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="en_sex" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="en_age" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="en_birthday" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="en_phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="en_status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <!-- 登录 -->
+  <resultMap type="com.entity.User" id="selectNameandPassd">
+  <id property="enId" column="en_id"/>
+  <result property="enUsername" column="en_username"/>
+  <result property="enReallyname" column="en_reallyname"/>
+  <result property="enPassword" column="en_password"/>
+  
+  </resultMap>
+  <sql id="select_nameAndpassd">
+   en_id, en_username, en_reallyname, en_password
+  </sql>
+  <sql id="Base_Column_List">
+    en_id, en_username, en_reallyname, en_password, en_sex, en_age, en_birthday, en_phone, 
+    en_status
+  </sql>
+  <!-- 返回总条数-->
+  <select id="userCount" resultType="java.lang.Integer">
+  SELECT COUNT(1) FROM user;
+  </select>
+ <!-- 分页 -->
+ <select id="limit" resultMap="selectNameandPassd">
+ select 
+  <include refid="select_nameAndpassd" />
+  from user limit #{strat},#{end}
+ </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where en_id = #{enId,jdbcType=INTEGER}
+  </select>
+  <!-- 登录 -->
+  <select id="selectBPrimaryUserNameBypassword" parameterType="java.lang.String" resultMap="selectNameandPassd">
+         select
+         <include refid="select_nameAndpassd"></include>
+         from user where en_username=#{name} and en_password=#{pasdd}
+  </select>
+  <!-- 查询名字 -->
+  <select id="selectName" resultMap="BaseResultMap">
+    select 
+    
+    *from user where en_username=#{name}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where en_id = #{enId,jdbcType=INTEGER}
+  </delete>
+  <!-- 注册 -->
+  <insert id="insertUser">
+    INSERT INTO `user`( en_username, en_reallyname, 
+      en_password)VALUES(#{name},#{reyname},#{passd});
+  </insert>
+  <insert id="insert" parameterType="com.entity.User">
+   
+    insert into `user`( en_username, en_reallyname, 
+      en_password)values(#{enUsername},#{enReallyname},#{enPassword})
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="enId != null">
+        en_id,
+      </if>
+      <if test="enUsername != null">
+        en_username,
+      </if>
+      <if test="enReallyname != null">
+        en_reallyname,
+      </if>
+      <if test="enPassword != null">
+        en_password,
+      </if>
+      <if test="enSex != null">
+        en_sex,
+      </if>
+      <if test="enAge != null">
+        en_age,
+      </if>
+      <if test="enBirthday != null">
+        en_birthday,
+      </if>
+      <if test="enPhone != null">
+        en_phone,
+      </if>
+      <if test="enStatus != null">
+        en_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="enId != null">
+        #{enId,jdbcType=INTEGER},
+      </if>
+      <if test="enUsername != null">
+        #{enUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="enReallyname != null">
+        #{enReallyname,jdbcType=VARCHAR},
+      </if>
+      <if test="enPassword != null">
+        #{enPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="enSex != null">
+        #{enSex,jdbcType=VARCHAR},
+      </if>
+      <if test="enAge != null">
+        #{enAge,jdbcType=INTEGER},
+      </if>
+      <if test="enBirthday != null">
+        #{enBirthday,jdbcType=DATE},
+      </if>
+      <if test="enPhone != null">
+        #{enPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="enStatus != null">
+        #{enStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.User">
+    update user
+    <set>
+      <if test="enUsername != null">
+        en_username = #{enUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="enReallyname != null">
+        en_reallyname = #{enReallyname,jdbcType=VARCHAR},
+      </if>
+      <if test="enPassword != null">
+        en_password = #{enPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="enSex != null">
+        en_sex = #{enSex,jdbcType=VARCHAR},
+      </if>
+      <if test="enAge != null">
+        en_age = #{enAge,jdbcType=INTEGER},
+      </if>
+      <if test="enBirthday != null">
+        en_birthday = #{enBirthday,jdbcType=DATE},
+      </if>
+      <if test="enPhone != null">
+        en_phone = #{enPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="enStatus != null">
+        en_status = #{enStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where en_id = #{enId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.User">
+    update user
+    set en_username = #{enUsername,jdbcType=VARCHAR},
+      en_reallyname = #{enReallyname,jdbcType=VARCHAR},
+      en_password = #{enPassword,jdbcType=VARCHAR},
+      en_sex = #{enSex,jdbcType=VARCHAR},
+      en_age = #{enAge,jdbcType=INTEGER},
+      en_birthday = #{enBirthday,jdbcType=DATE},
+      en_phone = #{enPhone,jdbcType=VARCHAR},
+      en_status = #{enStatus,jdbcType=INTEGER}
+    where en_id = #{enId,jdbcType=INTEGER}
+  </update>
+
+ <!-- 修改密码 -->
+ <update id="upuserPassd">
+ update user 
+ set
+ en_password =#{passd}
+ where en_id = #{epcId}
+ </update>
+
+</mapper>

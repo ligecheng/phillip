@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapperFaces.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.entity.Product">
+    <constructor>
+      <idArg column="ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ep_price" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="ep_stock" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="epc_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_parent_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_file_path" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.entity.Product">
+    <constructor>
+      <idArg column="ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ep_price" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="ep_stock" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="epc_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_parent_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_file_path" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ep_desc" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ep_id, ep_name, ep_price, ep_stock, epc_id, ep_parent_id, ep_file_path
+  </sql>
+  <sql id="Blob_Column_List">
+    ep_desc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product
+    where ep_id = #{epId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from product
+    where ep_id = #{epId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="epId" parameterType="com.entity.Product">
+    insert into product (ep_id, ep_name, ep_price, 
+      ep_stock, epc_id, ep_parent_id, 
+      ep_file_path, ep_desc)
+    values (#{epId,jdbcType=INTEGER}, #{epName,jdbcType=VARCHAR}, #{epPrice,jdbcType=DOUBLE}, 
+      #{epStock,jdbcType=INTEGER}, #{epcId,jdbcType=INTEGER}, #{epParentId,jdbcType=INTEGER}, 
+      #{epFilePath,jdbcType=VARCHAR}, #{epDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="epId" parameterType="com.entity.Product">
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="epId != null">
+        ep_id,
+      </if>
+      <if test="epName != null">
+        ep_name,
+      </if>
+      <if test="epPrice != null">
+        ep_price,
+      </if>
+      <if test="epStock != null">
+        ep_stock,
+      </if>
+      <if test="epcId != null">
+        epc_id,
+      </if>
+      <if test="epParentId != null">
+        ep_parent_id,
+      </if>
+      <if test="epFilePath != null">
+        ep_file_path,
+      </if>
+      <if test="epDesc != null">
+        ep_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="epId != null">
+        #{epId,jdbcType=INTEGER},
+      </if>
+      <if test="epName != null">
+        #{epName,jdbcType=VARCHAR},
+      </if>
+      <if test="epPrice != null">
+        #{epPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="epStock != null">
+        #{epStock,jdbcType=INTEGER},
+      </if>
+      <if test="epcId != null">
+        #{epcId,jdbcType=INTEGER},
+      </if>
+      <if test="epParentId != null">
+        #{epParentId,jdbcType=INTEGER},
+      </if>
+      <if test="epFilePath != null">
+        #{epFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="epDesc != null">
+        #{epDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.Product">
+    update product
+    <set>
+      <if test="epName != null">
+        ep_name = #{epName,jdbcType=VARCHAR},
+      </if>
+      <if test="epPrice != null">
+        ep_price = #{epPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="epStock != null">
+        ep_stock = #{epStock,jdbcType=INTEGER},
+      </if>
+      <if test="epcId != null">
+        epc_id = #{epcId,jdbcType=INTEGER},
+      </if>
+      <if test="epParentId != null">
+        ep_parent_id = #{epParentId,jdbcType=INTEGER},
+      </if>
+      <if test="epFilePath != null">
+        ep_file_path = #{epFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="epDesc != null">
+        ep_desc = #{epDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ep_id = #{epId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.entity.Product">
+    update product
+    set ep_name = #{epName,jdbcType=VARCHAR},
+      ep_price = #{epPrice,jdbcType=DOUBLE},
+      ep_stock = #{epStock,jdbcType=INTEGER},
+      epc_id = #{epcId,jdbcType=INTEGER},
+      ep_parent_id = #{epParentId,jdbcType=INTEGER},
+      ep_file_path = #{epFilePath,jdbcType=VARCHAR},
+      ep_desc = #{epDesc,jdbcType=LONGVARCHAR}
+    where ep_id = #{epId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.Product">
+    update product
+    set ep_name = #{epName,jdbcType=VARCHAR},
+      ep_price = #{epPrice,jdbcType=DOUBLE},
+      ep_stock = #{epStock,jdbcType=INTEGER},
+      epc_id = #{epcId,jdbcType=INTEGER},
+      ep_parent_id = #{epParentId,jdbcType=INTEGER},
+      ep_file_path = #{epFilePath,jdbcType=VARCHAR}
+    where ep_id = #{epId,jdbcType=INTEGER}
+  </update>
+<!-- 查询分类商品 -->
+<select id="selectProduct" resultMap="ResultMapWithBLOBs"> 
+  select 
+  <include refid="Base_Column_List"/>,
+  <include  refid="Blob_Column_List"/>
+  from product where epc_id=#{encId}
+</select>
+<!-- 搜索功能 -->
+<select id="getSearch" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List"/>,
+    <include refid="Blob_Column_List"/>
+    from product where ep_name LIKE CONCAT(CONCAT('%', #{search}), '%')
+  
+</select>
+<!-- 返回所有商品列表 -->
+<select id="getProduct" resultMap="ResultMapWithBLOBs">
+ select 
+  <include refid="Base_Column_List"/>,
+  <include  refid="Blob_Column_List"/>
+  from product 
+</select>
+<!-- 取得总记录 -->
+<select id="count" resultType="java.lang.Integer">
+SELECT COUNT(1) FROM product;
+
+</select>
+<!-- 分页返回参数 -->
+<select id="limProduct" resultMap="ResultMapWithBLOBs">
+select 
+  <include refid="Base_Column_List"/>,
+  <include  refid="Blob_Column_List"/>
+  from product limit #{start},#{end}
+</select>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapperFaces.BannerMapper">
+  <resultMap id="BaseResultMap" type="com.entity.Banner">
+    <constructor>
+      <idArg column="eb_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eb_ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.entity.Banner">
+    <constructor>
+      <idArg column="eb_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eb_ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eb_file_path" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    eb_id, eb_ep_id
+  </sql>
+  <sql id="Blob_Column_List">
+    eb_file_path
+  </sql>
+  <select id="getBanner" resultMap="ResultMapWithBLOBs">
+   select
+   <include refid="Base_Column_List"/>,
+   <include  refid="Blob_Column_List"/>
+   from banner
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from banner
+    where eb_id = #{ebId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from banner
+    where eb_id = #{ebId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.entity.Banner">
+    insert into banner (eb_id, eb_ep_id, eb_file_path
+      )
+    values (#{ebId,jdbcType=INTEGER}, #{ebEpId,jdbcType=INTEGER}, #{ebFilePath,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.Banner">
+    insert into banner
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ebId != null">
+        eb_id,
+      </if>
+      <if test="ebEpId != null">
+        eb_ep_id,
+      </if>
+      <if test="ebFilePath != null">
+        eb_file_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ebId != null">
+        #{ebId,jdbcType=INTEGER},
+      </if>
+      <if test="ebEpId != null">
+        #{ebEpId,jdbcType=INTEGER},
+      </if>
+      <if test="ebFilePath != null">
+        #{ebFilePath,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.Banner">
+    update banner
+    <set>
+      <if test="ebEpId != null">
+        eb_ep_id = #{ebEpId,jdbcType=INTEGER},
+      </if>
+      <if test="ebFilePath != null">
+        eb_file_path = #{ebFilePath,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where eb_id = #{ebId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.entity.Banner">
+    update banner
+    set eb_ep_id = #{ebEpId,jdbcType=INTEGER},
+      eb_file_path = #{ebFilePath,jdbcType=LONGVARCHAR}
+    where eb_id = #{ebId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.Banner">
+    update banner
+    set eb_ep_id = #{ebEpId,jdbcType=INTEGER}
+    where eb_id = #{ebId,jdbcType=INTEGER}
+  </update>
+ 
+</mapper>

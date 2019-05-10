@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapperFaces.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.entity.Order">
+    <constructor>
+      <idArg column="eo_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eo_user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eo_creatr_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="eo_status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eo_total" javaType="java.lang.Double" jdbcType="DOUBLE" />
+    </constructor>
+  </resultMap>
+  
+  <resultMap id="AllResultMap" type="com.entity.Order">
+      <id column="eo_id" property="eoId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eo_user_id" property="eoUserId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eo_creatr_time" property="eoCreatrTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <result column="eo_status" property="eoStatus" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eo_total" property="eoTotal" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <collection property="orderDetailList" column="eo_id" select="com.mapperFaces.OrderDetailMapper.selectOrderDetailForEoId"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    eo_id, eo_user_id, eo_creatr_time, eo_status, eo_total
+  </sql>
+  <!-- 根据订单id获取 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="AllResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from `order`
+    where eo_id = #{eoId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 获取全部的订单 -->
+  <select id="getAllOrder" resultType="java.util.List" resultMap="AllResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from `order` 
+  </select>
+  
+  <!-- 根据用户id获取订单 -->
+  <select id="getOrderFormUserId" resultType="java.util.List" parameterType="java.lang.Integer" resultMap="AllResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from `order`  where eo_user_id=#{eoUserId,jdbcType=INTEGER}
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from `order`
+    where eo_id = #{eoId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.entity.Order">
+    insert into `order` (eo_id, eo_user_id, eo_creatr_time, 
+      eod_id, eo_status, eo_total
+      )
+    values (#{eoId,jdbcType=INTEGER}, #{eoUserId,jdbcType=INTEGER}, #{eoCreatrTime,jdbcType=TIMESTAMP}, 
+      #{eodId,jdbcType=INTEGER}, #{eoStatus,jdbcType=INTEGER}, #{eoTotal,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="eoId"  parameterType="com.entity.Order">
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eoId != null">
+        eo_id,
+      </if>
+      <if test="eoUserId != null">
+        eo_user_id,
+      </if>
+      <if test="eoCreatrTime != null">
+        eo_creatr_time,
+      </if>
+     
+      <if test="eoStatus != null">
+        eo_status,
+      </if>
+      <if test="eoTotal != null">
+        eo_total,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eoId != null">
+        #{eoId,jdbcType=INTEGER},
+      </if>
+      <if test="eoUserId != null">
+        #{eoUserId,jdbcType=INTEGER},
+      </if>
+      <if test="eoCreatrTime != null">
+        #{eoCreatrTime,jdbcType=TIMESTAMP},
+      </if>
+     
+      <if test="eoStatus != null">
+        #{eoStatus,jdbcType=INTEGER},
+      </if>
+      <if test="eoTotal != null">
+        #{eoTotal,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <!-- 插入后查询自增id -->
+    <insert id="insertReKey" parameterType="com.entity.Order">
+    
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eoId != null">
+        eo_id,
+      </if>
+      <if test="eoUserId != null">
+        eo_user_id,
+      </if>
+      <if test="eoCreatrTime != null">
+        eo_creatr_time,
+      </if>
+     
+      <if test="eoStatus != null">
+        eo_status,
+      </if>
+      <if test="eoTotal != null">
+        eo_total,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eoId != null">
+        #{eoId,jdbcType=INTEGER},
+      </if>
+      <if test="eoUserId != null">
+        #{eoUserId,jdbcType=INTEGER},
+      </if>
+      <if test="eoCreatrTime != null">
+        #{eoCreatrTime,jdbcType=TIMESTAMP},
+      </if>
+    
+      <if test="eoStatus != null">
+        #{eoStatus,jdbcType=INTEGER},
+      </if>
+      <if test="eoTotal != null">
+        #{eoTotal,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    
+    
+  </insert>
+  
+  
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.Order">
+    update `order`
+    <set>
+      <if test="eoUserId != null">
+        eo_user_id = #{eoUserId,jdbcType=INTEGER},
+      </if>
+      <if test="eoCreatrTime != null">
+        eo_creatr_time = #{eoCreatrTime,jdbcType=TIMESTAMP},
+      </if>
+      
+      <if test="eoStatus != null">
+        eo_status = #{eoStatus,jdbcType=INTEGER},
+      </if>
+      <if test="eoTotal != null">
+        eo_total = #{eoTotal,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where eo_id = #{eoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.Order">
+    update `order`
+    set eo_user_id = #{eoUserId,jdbcType=INTEGER},
+      eo_creatr_time = #{eoCreatrTime,jdbcType=TIMESTAMP},
+      eo_status = #{eoStatus,jdbcType=INTEGER},
+      eo_total = #{eoTotal,jdbcType=DOUBLE}
+    where eo_id = #{eoId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 修改订单状态 -->
+   <update id="updateOrderState" parameterType="com.entity.Order">
+    update `order` set
+      eo_status = #{eoStatus,jdbcType=INTEGER}
+    where eo_id = #{eoId,jdbcType=INTEGER}
+  </update>
+</mapper>

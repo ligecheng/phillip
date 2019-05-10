@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>首页</title>
+</head>
+
+<body>
+
+    <button id="submit">购买</button>
+    
+    <button id="deleteSubmit">删除订单</button>
+    <button id="updateSubmit">更新订单</button>
+</body>
+<script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.js"></script>
+<script>
+    $("#submit").on("click", function () {
+        var pdData = {
+            "products": [{
+                    "productId": 1,
+                    "eodCount": 2,
+                    "eodPrice":14.55
+                },
+                {
+                	"productId": 1,
+                    "eodCount": 2,
+                    "eodPrice":14.55
+                },
+                {
+                	"productId": 1,
+                    "eodCount": 2,
+                    "eodPrice":14.55
+                }
+            ]
+        }
+        $.ajax({
+            type: "post",
+            contentType : "application/json",
+            url: "http://192.168.1.94:9090/mCore/closing.do",
+            data: JSON.stringify(pdData),
+            success:function(){
+                console.log("请求成功");
+            },
+            error:function(err){
+                console.log(err);
+            }
+
+        })
+
+    });
+    
+    $("#deleteSubmit").on("click", function () {
+    	 $.ajax({
+             type: "post",
+             url: "http://192.168.1.94:9090/mCore/deleteOrder.do",
+             data: {"orderId":3},
+             success:function(data){
+                 console.log(data.requestCode);
+             },
+             error:function(err){
+                 console.log(err);
+                 
+                 
+             }
+
+         })
+ 
+    });
+    $("#updateSubmit").on("click", function () {
+   	 $.ajax({
+            type: "post",
+            url: "http://192.168.1.94:9090/mCore/updateOrderState.do",
+            data:{"eoId":1,"eoStatus":1},
+            success:function(data){
+                console.log(data);
+            },
+            error:function(err){
+                console.log(err);
+            }
+
+        })
+
+   })
+</script>
+
+</html>

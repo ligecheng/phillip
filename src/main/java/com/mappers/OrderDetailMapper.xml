@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapperFaces.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.entity.OrderDetail">
+    <constructor>
+      <idArg column="eod_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eod_eo_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eod_ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eod_count" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="eod_total_price" javaType="java.lang.Double" jdbcType="DOUBLE" />
+    </constructor>
+  </resultMap>
+  
+  
+  <resultMap id="AllResultMap" type="com.entity.OrderDetail">
+      <id column="eod_id" property="eodId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eod_eo_id" property="eodEoId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eod_ep_id"  property="eodEpId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eod_count" property="eodCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="eod_total_price" property="eodTotalPrice" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <!-- 一对一,column 为 为预期传递的字段,根据当前 eod_ep_id 字段,传递当前查询到的商品名去 执行外部的查询 -->
+      <collection property="product" javaType="com.entity.Product" column ="eod_ep_id" select="com.mapperFaces.ProductMapper.selectByPrimaryKey"/>
+      
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List">
+    eod_id, eod_eo_id, eod_ep_id, eod_count, eod_total_price
+  </sql>
+  
+  <select id="selectByOneOrder"  resultMap="AllResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_detail
+    where eod_id = #{eodId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据订单id查询订单详情 -->
+  <select id="selectOrderDetailForEoId"  resultMap="AllResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_detail
+    where eod_eo_id = #{eoId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_detail
+    where eod_id = #{eodId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 删除指定订单id的所有订单详情 -->
+  <delete id="deleteOrderDetailFormOrderId" parameterType="java.lang.Integer">
+    delete from order_detail
+    where eod_eo_id = #{eodEoId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_detail
+    where eod_id = #{eodId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.entity.OrderDetail">
+    insert into order_detail ( eod_eo_id, eod_ep_id, 
+      eod_count, eod_total_price)
+    values ( #{eodEoId,jdbcType=INTEGER}, #{eodEpId,jdbcType=INTEGER}, 
+      #{eodCount,jdbcType=INTEGER}, #{eodTotalPrice,jdbcType=DOUBLE})
+  </insert>
+  
+  <!-- 批量插入 -->
+ <insert id="insertBatch" parameterType="java.util.List">
+   insert into order_detail( eod_eo_id, eod_ep_id, 
+      eod_count, eod_total_price) values
+      <foreach collection="list" item="item" index="index" separator=",">
+        ( #{item.eodEoId,jdbcType=INTEGER}, #{item.eodEpId,jdbcType=INTEGER}, 
+        #{item.eodCount,jdbcType=INTEGER}, #{item.eodTotalPrice,jdbcType=DOUBLE})
+      </foreach>
+ </insert>  
+  
+  
+  <insert id="insertSelective" parameterType="com.entity.OrderDetail">
+    insert into order_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eodId != null">
+        eod_id,
+      </if>
+      <if test="eodEoId != null">
+        eod_eo_id,
+      </if>
+      <if test="eodEpId != null">
+        eod_ep_id,
+      </if>
+      <if test="eodCount != null">
+        eod_count,
+      </if>
+      <if test="eodTotalPrice != null">
+        eod_total_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eodId != null">
+        #{eodId,jdbcType=INTEGER},
+      </if>
+      <if test="eodEoId != null">
+        #{eodEoId,jdbcType=INTEGER},
+      </if>
+      <if test="eodEpId != null">
+        #{eodEpId,jdbcType=INTEGER},
+      </if>
+      <if test="eodCount != null">
+        #{eodCount,jdbcType=INTEGER},
+      </if>
+      <if test="eodTotalPrice != null">
+        #{eodTotalPrice,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.OrderDetail">
+    update order_detail
+    <set>
+      <if test="eodEoId != null">
+        eod_eo_id = #{eodEoId,jdbcType=INTEGER},
+      </if>
+      <if test="eodEpId != null">
+        eod_ep_id = #{eodEpId,jdbcType=INTEGER},
+      </if>
+      <if test="eodCount != null">
+        eod_count = #{eodCount,jdbcType=INTEGER},
+      </if>
+      <if test="eodTotalPrice != null">
+        eod_total_price = #{eodTotalPrice,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where eod_id = #{eodId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.OrderDetail">
+    update order_detail
+    set eod_eo_id = #{eodEoId,jdbcType=INTEGER},
+      eod_ep_id = #{eodEpId,jdbcType=INTEGER},
+      eod_count = #{eodCount,jdbcType=INTEGER},
+      eod_total_price = #{eodTotalPrice,jdbcType=DOUBLE}
+    where eod_id = #{eodId,jdbcType=INTEGER}
+  </update>
+</mapper>

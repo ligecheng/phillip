@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>首页</title>
+</head>
+<body>
+
+    <button id="submit">提交json数据</button>
+</body>
+<script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.js"></script>
+<script>
+    $("#submit").on("click", function () {
+        var pdData = {
+            "products": [{
+                    "productId": 1,
+                    "quantity": 2,
+                    
+                },
+                {
+                    "productId": 2,
+                    "quantity": 3
+                },
+                {
+                    "productId": 3,
+                    "quantity": 4
+                }
+            ]
+        }
+        var pd = JSON.stringify(pdData);
+        $.ajax({
+            type: "post",
+            url: "http://192.168.1.43:9090/mCore/shoppingCart.do",
+            data: {"userId":1},
+            success:function(data){
+                console.log("请求成功");
+                console.log(data);
+            },
+            error:function(err){
+                console.log(err);
+            }
+
+        })
+
+    })
+</script>
+</html>

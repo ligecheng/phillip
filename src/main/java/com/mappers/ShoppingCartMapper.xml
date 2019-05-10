@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapperFaces.ShoppingCartMapper">
+  <resultMap id="BaseResultMap" type="com.entity.ShoppingCart">
+    <constructor>
+      <idArg column="es_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="es_ep_file_path" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="es_ep_count" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="es_ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="es_eu_user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+    <association property="product" javaType="com.entity.Product" resultMap="resultProductList" />
+  </resultMap>
+  	
+  <resultMap id="resultProductList" type="com.entity.Product">
+    <constructor>
+      <idArg column="ep_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ep_price" javaType="java.lang.Double" jdbcType="DOUBLE" />
+      <arg column="ep_stock" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="epc_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_parent_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="ep_file_path" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ep_desc" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  
+  <sql id="Base_Column_List_Cart">
+    es_id, es_ep_file_path, es_ep_count, es_ep_id, es_eu_user_id
+  </sql>
+  
+  <sql id="Base_Column_List_Product">
+    ep_id, ep_name, ep_price, ep_stock, epc_id, ep_parent_id, ep_file_path, ep_desc
+  </sql>
+  
+  <select id="selectByUserPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+     <include refid="Base_Column_List_Cart"/> ,
+     <include refid="Base_Column_List_Product"/>
+     FROM shopping_cart AS s INNER JOIN product AS p ON s.es_ep_id
+ 	IN (SELECT s.es_ep_id FROM USER u JOIN shopping_cart s ON u.en_id = 
+ 	(SELECT en_id FROM USER WHERE en_id = #{userId,jdbcType=INTEGER}) AND u.en_id = s.es_eu_user_id ) 
+ 	AND s.es_ep_id = p.ep_id WHERE s.es_eu_user_id = #{userId,jdbcType=INTEGER};
+  </select>
+  
+  <delete id="deleteByUserAllProductByPrimaryKey" parameterType="java.lang.Integer">
+  	delete from shopping_cart where es_eu_user_id = #{enId,jdbcType = INTEGER};
+  </delete>
+  
+  <delete id="deleteByPrimaryKey">
+    delete from shopping_cart where es_eu_user_id = 
+    #{enId,jdbcType = INTEGER} and es_id = #{esId,jdbcType = INTEGER};
+  </delete>
+  <insert id="insert" parameterType="com.entity.ShoppingCart">
+    insert into shopping_cart (es_id, es_ep_file_path, es_ep_count, 
+      es_ep_id, es_eu_user_id)
+    values (#{esId,jdbcType=INTEGER}, #{esEpFilePath,jdbcType=VARCHAR}, #{esEpCount,jdbcType=INTEGER}, 
+      #{esEpId,jdbcType=INTEGER}, #{esEuUserId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.ShoppingCart">
+    insert into shopping_cart
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="esId != null">
+        es_id,
+      </if>
+      <if test="esEpFilePath != null">
+        es_ep_file_path,
+      </if>
+      <if test="esEpCount != null">
+        es_ep_count,
+      </if>
+      <if test="esEpId != null">
+        es_ep_id,
+      </if>
+      <if test="esEuUserId != null">
+        es_eu_user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="esId != null">
+        #{esId,jdbcType=INTEGER},
+      </if>
+      <if test="esEpFilePath != null">
+        #{esEpFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="esEpCount != null">
+        #{esEpCount,jdbcType=INTEGER},
+      </if>
+      <if test="esEpId != null">
+        #{esEpId,jdbcType=INTEGER},
+      </if>
+      <if test="esEuUserId != null">
+        #{esEuUserId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.ShoppingCart">
+    update shopping_cart
+    <set>
+      <if test="esEpFilePath != null">
+        es_ep_file_path = #{esEpFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="esEpCount != null">
+        es_ep_count = #{esEpCount,jdbcType=INTEGER},
+      </if>
+      <if test="esEpId != null">
+        es_ep_id = #{esEpId,jdbcType=INTEGER},
+      </if>
+      <if test="esEuUserId != null">
+        es_eu_user_id = #{esEuUserId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where es_id = #{esId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.ShoppingCart">
+    update shopping_cart
+    set es_ep_file_path = #{esEpFilePath,jdbcType=VARCHAR},
+      es_ep_count = #{esEpCount,jdbcType=INTEGER},
+      es_ep_id = #{esEpId,jdbcType=INTEGER},
+      es_eu_user_id = #{esEuUserId,jdbcType=INTEGER}
+    where es_id = #{esId,jdbcType=INTEGER}
+  </update>
+</mapper>
